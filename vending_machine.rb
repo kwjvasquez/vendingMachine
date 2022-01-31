@@ -22,16 +22,22 @@ def buy(machine, option)
   amount_due = machine[option - 1][1] #  product cost. 
   amount_input = 0
 
-  print "Do you want to see the coins and bills valid? yes (y) any character for no: "
-  info = gets.chomp 
-  information(bills_coins_valid) if info == "y"
-  
   until amount_input >= amount_due
     print "Insert bill or coin ($): "
-    input = gets.to_i
-    amount_input += input
+    input_usr = gets.to_i
+    if bills_coins_valid.include?(input_usr)
+      amount_input += input_usr
+    else
+      puts "XXX Incorrect input XXX"
+      print "Do you want to see the coins and bills valid? yes (y) any character for no: "
+      info = gets.chomp 
+      information(bills_coins_valid) if info == "y"
+    end
   end
-  puts "Reached the amount\n\n"
+  
+  change = amount_input - amount_due
+  puts "\nPurchase sucessfull: #{amount_due} | Change: #{change}\n\n"
+  machine[option - 1][2] -= 1 # decrease a product units.
 end
 
 # Drink name - Cost - Qty in Machine
@@ -47,7 +53,11 @@ until quit == true
   option = menu(kmachine)
   case option
   when 1, 2, 3, 4
-     buy(kmachine, option)
+    if kmachine[option-1][2] > 0
+      buy(kmachine, option)
+    else
+      puts "\n--> Sorry, out of stock. Invite you a chose another options.  <--\n\n"
+    end
   when 5  
     quit = true
   else 
