@@ -12,9 +12,23 @@ def menu(machine)
   option = gets.chomp.to_i
 end
 
-def information(money)
+def information(valid_money)
   puts "\n(INFORMATION) The machine only accept the next bills or coins: "
-  money.each { |value| puts "$#{value}" }
+  valid_money.each { |value| puts "$#{value}" }
+end
+
+def return_change(valid_money, change)
+  bills_coins = []
+  index = 0
+  until change == 0
+    q = change - valid_money[index]
+    if q >= 0
+      change -= valid_money[index]
+      bills_coins.push(valid_money[index])
+    end
+    index += 1
+  end
+  puts bills_coins
 end
 
 def buy(machine, option)
@@ -37,6 +51,7 @@ def buy(machine, option)
   
   change = amount_input - amount_due
   puts "\nPurchase sucessfull: #{amount_due} | Change: #{change}\n\n"
+  return_change(bills_coins_valid, change)
   machine[option - 1][2] -= 1 # decrease a product units.
 end
 
@@ -53,7 +68,7 @@ until quit == true
   option = menu(kmachine)
   case option
   when 1, 2, 3, 4
-    if kmachine[option-1][2] > 0
+    if kmachine[option-1][2] > 0 # evaluate if there is stock.
       buy(kmachine, option)
     else
       puts "\n--> Sorry, out of stock. Invite you a chose another options.  <--\n\n"
