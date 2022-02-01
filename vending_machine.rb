@@ -39,6 +39,7 @@ def buy(products, option)
     money_valid = [5_000, 2_000, 1_000, 500, 200, 100]
     amount_insert = 0
     until amount_insert >= product_to_buy[:cost]
+      puts "To complete this purchase insert $#{product_to_buy[:cost] - amount_insert} or more:"
       print "Insert a bill or coin ($): "
       input_user = gets.chomp.to_i
       if money_valid.include?(input_user)
