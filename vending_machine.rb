@@ -9,9 +9,13 @@ def menu_machine(products)
   print "Choose a option: "
   option = gets.chomp.to_i
   case option
-  when 1..products.length then buy(products, option)
-  when option_quit then return true
-  else puts "<< Incorrect option, try again >>"
+  when 1..products.length
+    buy(products, option)
+  when option_quit 
+    return true
+  else 
+    puts "<< Incorrect option, try again >>"
+    menu_machine(products)
   end
 end
 
