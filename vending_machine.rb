@@ -11,8 +11,7 @@ def menu_machine(products)
   case option
   when 1..products.length
     buy(products, option)
-  when option_quit 
-    return true
+  when option_quit then return true
   else 
     puts "<< Incorrect option, try again >>"
     menu_machine(products)  # recursion. 
@@ -20,7 +19,14 @@ def menu_machine(products)
 end
 
 def buy(products, option)
-  puts "Construction!"
+  product_scan = products.select { |product| product[:id] == option } # return an array 
+  product_to_buy = product_scan[0] 
+  if product_to_buy[:qty] > 0
+    puts "In construction"
+  else
+    puts "#{product_to_buy[:qty]} out of stock!"
+    puts "Sorry, invite you a take another product!"
+  end
 end
 
 products = [
