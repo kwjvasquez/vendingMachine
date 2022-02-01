@@ -22,7 +22,19 @@ def buy(products, option)
   product_scan = products.select { |product| product[:id] == option } # return an array 
   product_to_buy = product_scan[0] 
   if product_to_buy[:qty] > 0
-    puts "In construction"
+    money_valid = [5_000, 2_000, 1_000, 500, 200, 100]
+    amount_insert = 0
+    until amount_insert >= product_to_buy[:cost]
+      print "Insert a bill or coin ($): "
+      input_user = gets.chomp.to_i
+      if money_valid.include?(input_user)
+        amount_insert += input_user
+      else
+        puts "Not valid, please try again!"
+      end
+      change = amount_insert - product_to_buy[:cost]
+      puts "Purchase successfull: $#{product_to_buy[:cost]} | Total: #{amount_insert} | Change: #{change}"
+    end
   else
     puts "#{product_to_buy[:qty]} out of stock!"
     puts "Sorry, invite you a take another product!"
