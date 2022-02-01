@@ -1,6 +1,7 @@
 # Vending Machine
 
 def menu_machine(products)
+  puts "----------*------------"
   puts "Welcome to K soft drink!"
   products.each { |product| puts "#{product[:id]}. #{product[:name]} | $#{product[:cost]}"}
   option_quit = products.size.next
@@ -18,9 +19,22 @@ def menu_machine(products)
   end
 end
 
+def optimized_change(change, money_valid)
+  change_op = []
+  money_valid.each do |value|
+    unless change == 0 || value > change
+      qty = change/value
+      change -= value * qty
+      change_op.push([value, qty])
+    end
+  end
+  puts "Minimum number of bills and/or coins for the change:"
+  change_op.each {|value, qty| puts "#{qty}: $#{value}"}
+end
+
 def buy(products, option)
   product_scan = products.select { |product| product[:id] == option } # return an array 
-  product_to_buy = product_scan[0] 
+  product_to_buy = product_scan[0] # take the hash element
   if product_to_buy[:qty] > 0
     money_valid = [5_000, 2_000, 1_000, 500, 200, 100]
     amount_insert = 0
@@ -32,15 +46,17 @@ def buy(products, option)
       else
         puts "Not valid, please try again!"
       end
-      change = amount_insert - product_to_buy[:cost]
-      puts "Purchase successfull: $#{product_to_buy[:cost]} | Total: #{amount_insert} | Change: #{change}"
     end
+    change = amount_insert - product_to_buy[:cost]
+    puts "Purchase successfull: $#{product_to_buy[:cost]} | Total: $#{amount_insert} | Change: $#{change}"
+    optimized_change(change, money_valid)
   else
     puts "#{product_to_buy[:qty]} out of stock!"
     puts "Sorry, invite you a take another product!"
   end
 end
 
+# initial data
 products = [
   {id: 1, name: "Coke", cost: 2_500, qty: 5},
   {id: 2, name: "Water", cost: 2_000, qty: 4},
