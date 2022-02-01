@@ -15,7 +15,7 @@ def menu_machine(products)
     return true
   else 
     puts "<< Incorrect option, try again >>"
-    menu_machine(products)
+    menu_machine(products)  # recursion. 
   end
 end
 
