@@ -18,17 +18,26 @@ def information(valid_money)
 end
 
 def return_change(valid_money, change)
+  # This method return the change optimized.
   bills_coins = []
   index = 0
   until change == 0
-    q = change - valid_money[index]
-    if q >= 0
+    test_ = change - valid_money[index]
+    while test_ >= 0
       change -= valid_money[index]
       bills_coins.push(valid_money[index])
+      test_ = change - valid_money[index]
     end
     index += 1
   end
-  puts bills_coins
+  
+  unless bills_coins.empty?
+    count = Hash.new(0)
+    bills_coins.each { |value| count[value] += 1 }
+    puts "Minimum number of bills and/or coins:"
+    count.each {|value, amount| puts "#{amount}: $#{value}"}
+    puts
+  end
 end
 
 def buy(machine, option)
@@ -50,7 +59,7 @@ def buy(machine, option)
   end
   
   change = amount_input - amount_due
-  puts "\nPurchase sucessfull: #{amount_due} | Change: #{change}\n\n"
+  puts "\nPurchase sucessfull: $#{amount_due} | Change: $#{change} | Total: $#{amount_input}\n"
   return_change(bills_coins_valid, change)
   machine[option - 1][2] -= 1 # decrease a product units.
 end
