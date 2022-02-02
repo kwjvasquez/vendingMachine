@@ -9,8 +9,7 @@ def optimized_change(change, money_valid)
       change_opt.push([value, qty])
     end
   end
-  puts "Minimum number of bills and/or coins for the change:"
-  change_opt.each {|value, qty| puts "#{qty}: $#{value}"}
+  change_opt
 end
 
 def buy(product_cost, money_valid)
@@ -41,7 +40,7 @@ until quit == true
   # menu
   puts "----------*------------"
   puts "Welcome to K soft drink!"
-  products.each { |product| puts "#{product[:id]}. #{product[:name].rjust(7)}:\t$#{product[:cost]} "}
+  products.each { |product| puts "#{product[:id]}. #{product[:name].rjust(7)}:\t$#{product[:cost]}" }
   option_quit = products.size.next
   puts "#{option_quit}. Quit"
   print "Choose a option: "
@@ -51,9 +50,11 @@ until quit == true
     product_to_buy = products.find { |product| product[:id] == option } # return a product specific.  
     if product_to_buy[:qty] > 0
       money_valid = [5_000, 2_000, 1_000, 500, 200, 100]
-      change = buy(product_to_buy[:cost], money_valid) # make a purchase
-      puts "\nPurchase successfull: $#{product_to_buy[:cost]} | Change: $#{change}\n\n"
-      #optimized_change(change, money_valid)
+      change_value = buy(product_to_buy[:cost], money_valid) # make a purchase
+      puts "\nPurchase successfull: $#{product_to_buy[:cost]} | Change: $#{change_value}\n\n"
+      change = optimized_change(change_value, money_valid)
+      puts "Minimum number of bills and/or coins for the change:"
+      change.each { |value, qty| puts "#{qty}: $#{value}" } # show change optimized. 
     else
       puts "#{product_to_buy[:qty]} out of stock!"
       puts "Sorry, invite you a take another product!"
