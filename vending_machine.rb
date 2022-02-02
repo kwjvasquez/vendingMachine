@@ -1,41 +1,31 @@
 # Vending Machine
 
 def optimized_change(change, money_valid)
-  change_op = []
+  change_opt = []
   money_valid.each do |value|
     unless change == 0 || value > change
       qty = change/value
       change -= value * qty
-      change_op.push([value, qty])
+      change_opt.push([value, qty])
     end
   end
   puts "Minimum number of bills and/or coins for the change:"
-  change_op.each {|value, qty| puts "#{qty}: $#{value}"}
+  change_opt.each {|value, qty| puts "#{qty}: $#{value}"}
 end
 
-def buy(products, option)
-  product_scan = products.select { |product| product[:id] == option } # return an array 
-  product_to_buy = product_scan[0] # take the hash element
-  if product_to_buy[:qty] > 0
-    money_valid = [5_000, 2_000, 1_000, 500, 200, 100]
-    amount_insert = 0
-    until amount_insert >= product_to_buy[:cost]
-      puts "To complete this purchase insert $#{product_to_buy[:cost] - amount_insert} or more:"
-      print "Insert a bill or coin ($): "
-      input_user = gets.chomp.to_i
-      if money_valid.include?(input_user)
-        amount_insert += input_user
-      else
-        puts "Not valid, please try again!"
-      end
+def buy(product_cost, money_valid)
+  amount_insert = 0
+  until amount_insert >= product_cost
+    puts "To complete this purchase insert $#{product_cost - amount_insert} or more:"
+    print "Insert a bill or coin ($): "
+    input_user = gets.chomp.to_i
+    if money_valid.include?(input_user)
+      amount_insert += input_user
+    else
+      puts "Not valid, please try again!"
     end
-    change = amount_insert - product_to_buy[:cost]
-    puts "Purchase successfull: $#{product_to_buy[:cost]} | Total: $#{amount_insert} | Change: $#{change}"
-    optimized_change(change, money_valid)
-  else
-    puts "#{product_to_buy[:qty]} out of stock!"
-    puts "Sorry, invite you a take another product!"
   end
+  change = amount_insert - product_cost
 end
 
 # initial data
@@ -58,7 +48,16 @@ until quit == true
   option = gets.chomp.to_i
   case option
   when 1..products.length
-    #buy(products, option)
+    product_to_buy = products.find { |product| product[:id] == option } # return a product specific.  
+    if product_to_buy[:qty] > 0
+      money_valid = [5_000, 2_000, 1_000, 500, 200, 100]
+      change = buy(product_to_buy[:cost], money_valid) # make a purchase
+      puts "\nPurchase successfull: $#{product_to_buy[:cost]} | Change: $#{change}\n\n"
+      #optimized_change(change, money_valid)
+    else
+      puts "#{product_to_buy[:qty]} out of stock!"
+      puts "Sorry, invite you a take another product!"
+    end
   when option_quit then return true
   else 
     puts "<< Incorrect option, try again >>"
