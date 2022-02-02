@@ -1,24 +1,5 @@
 # Vending Machine
 
-def menu_machine(products)
-  puts "----------*------------"
-  puts "Welcome to K soft drink!"
-  products.each { |product| puts "#{product[:id]}. #{product[:name]} | $#{product[:cost]}"}
-  option_quit = products.size.next
-  puts "#{option_quit}. Quit"
-
-  print "Choose a option: "
-  option = gets.chomp.to_i
-  case option
-  when 1..products.length
-    buy(products, option)
-  when option_quit then return true
-  else 
-    puts "<< Incorrect option, try again >>"
-    menu_machine(products)  # recursion. 
-  end
-end
-
 def optimized_change(change, money_valid)
   change_op = []
   money_valid.each do |value|
@@ -67,5 +48,19 @@ products = [
 
 quit = false
 until quit == true
-  quit = menu_machine(products)
+  # menu
+  puts "----------*------------"
+  puts "Welcome to K soft drink!"
+  products.each { |product| puts "#{product[:id]}. #{product[:name].rjust(7)}:\t$#{product[:cost]} "}
+  option_quit = products.size.next
+  puts "#{option_quit}. Quit"
+  print "Choose a option: "
+  option = gets.chomp.to_i
+  case option
+  when 1..products.length
+    #buy(products, option)
+  when option_quit then return true
+  else 
+    puts "<< Incorrect option, try again >>"
+  end
 end
