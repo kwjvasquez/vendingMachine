@@ -11,12 +11,23 @@ def menu_machine(products)
   option = gets.chomp.to_i
   case option
   when 1..products.length
-    buy(products, option)
-  when option_quit then return true
+    $machine_money << buy(products, option)
+  when option_quit  
+    final_state(products)
+    return true
   else 
     puts "<< Incorrect option, try again >>"
     menu_machine(products)  # recursion. 
   end
+  false
+end
+
+def final_state(products)
+  puts "-------*---------"
+  puts "Thank you!"
+  products.each { |product| puts "Drink: #{product[:name]} | Units: #{product[:qty]}" }
+  money_in = $machine_money.sum
+  puts money_in
 end
 
 def optimized_change(change, money_valid)
@@ -30,6 +41,11 @@ def optimized_change(change, money_valid)
   end
   puts "Minimum number of bills and/or coins for the change:"
   change_op.each {|value, qty| puts "#{qty}: $#{value}"}
+end
+
+def purchase_done(products, product_buy)
+  index_product = products.index(product_buy)
+  products[index_product][:qty] -= 1
 end
 
 def buy(products, option)
@@ -49,11 +65,21 @@ def buy(products, option)
       end
     end
     change = amount_insert - product_to_buy[:cost]
-    puts "Purchase successfull: $#{product_to_buy[:cost]} | Total: $#{amount_insert} | Change: $#{change}"
-    optimized_change(change, money_valid)
+    balance = ($machine_money.sum + product_to_buy[:cost]) - amount_insert
+    if  balance >= 0
+      puts "Purchase was successfull: $#{product_to_buy[:cost]} | Total: $#{amount_insert} | Change: $#{change}"
+      optimized_change(change, money_valid)
+      purchase_done(products, product_to_buy)
+      return product_to_buy[:cost] 
+    else
+      puts " ** Purchase wasn't successfull ** "
+      puts " ** Don't have change for return you ** "
+      return 0 
+    end
   else
     puts "#{product_to_buy[:qty]} out of stock!"
     puts "Sorry, invite you a take another product!"
+    return 0
   end
 end
 
@@ -64,6 +90,8 @@ products = [
   {id: 3, name: "Oatmeal", cost: 1_500, qty: 3},
   {id: 4, name: "Tea", cost: 100, qty: 2}
 ]
+
+$machine_money = [0] # initial money for changes. 
 
 quit = false
 until quit == true
