@@ -1,7 +1,9 @@
 # Vending Machine
 
 def optimized_change(change, money_valid)
+  # This method return an array with the change.
   change_opt = []
+
   money_valid.each do |value|
     unless change == 0 || value > change
       qty = change/value
@@ -9,11 +11,14 @@ def optimized_change(change, money_valid)
       change_opt.push([value, qty])
     end
   end
+  
   change_opt
 end
 
 def buy(product_cost, money_valid)
+  # This method allow paid a product and recieve a change
   amount_insert = 0
+  
   until amount_insert >= product_cost
     puts "To complete this purchase insert $#{product_cost - amount_insert} or more:"
     print "Insert a bill or coin ($): "
@@ -24,6 +29,7 @@ def buy(product_cost, money_valid)
       puts "Not valid, please try again!"
     end
   end
+  
   change = amount_insert - product_cost
 end
 
@@ -35,16 +41,17 @@ products = [
   {id: 4, name: "Tea", cost: 100, qty: 2}
 ]
 
+machine_money = 0
 quit = false
 until quit == true
-  # menu
-  puts "----------*------------"
+  puts "----------*------------"  # menu
   puts "Welcome to K soft drink!"
   products.each { |product| puts "#{product[:id]}. #{product[:name].rjust(7)}:\t$#{product[:cost]}" }
   option_quit = products.size.next
   puts "#{option_quit}. Quit"
   print "Choose a option: "
   option = gets.chomp.to_i
+  
   case option
   when 1..products.length
     product_to_buy = products.find { |product| product[:id] == option } # return a product specific.  
@@ -55,12 +62,19 @@ until quit == true
       change = optimized_change(change_value, money_valid)
       puts "Minimum number of bills and/or coins for the change:"
       change.each { |value, qty| puts "#{qty}: $#{value}" } # show change optimized. 
+      machine_money += product_to_buy[:cost]
+      products.map { |product| product[:qty] -= 1 if product == product_to_buy } # update product quatity.
     else
-      puts "#{product_to_buy[:qty]} out of stock!"
+      puts "#{product_to_buy[:name]} out of stock!"
       puts "Sorry, invite you a take another product!"
     end
-  when option_quit then return true
+  when option_quit
+    quit = true
   else 
     puts "<< Incorrect option, try again >>"
   end
 end
+
+puts "----------*------------" 
+products.each { |product| puts "#{product[:id]}. #{product[:name].rjust(7)} - units: #{product[:qty]}" }
+puts "Total money: $#{machine_money}"
