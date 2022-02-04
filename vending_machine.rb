@@ -1,12 +1,12 @@
 # Vending Machine
 
-def optimized_change(change, money_valid)
+def optimized_change(change, MONEY_VALID)
   # This method return an array with the change.
   change_opt = []
 
-  money_valid.each do |value|
+  MONEY_VALID.each do |value|
     unless change == 0 || value > change
-      qty = change/value
+      qty = change / value
       change -= value * qty
       change_opt.push([value, qty])
     end
@@ -15,7 +15,7 @@ def optimized_change(change, money_valid)
   change_opt
 end
 
-def buy(product_cost, money_valid)
+def buy(product_cost, MONEY_VALID)
   # This method allow paid a product and recieve a change
   amount_insert = 0
   
@@ -23,7 +23,7 @@ def buy(product_cost, money_valid)
     puts "To complete this purchase insert $#{product_cost - amount_insert} or more:"
     print "Insert a bill or coin ($): "
     input_user = gets.chomp.to_i
-    if money_valid.include?(input_user)
+    if MONEY_VALID.include?(input_user)
       amount_insert += input_user
     else
       puts "Not valid, please try again!"
@@ -56,10 +56,10 @@ until quit == true
   when 1..products.length
     product_to_buy = products.find { |product| product[:id] == option } # return a product specific.  
     if product_to_buy[:qty] > 0
-      money_valid = [5_000, 2_000, 1_000, 500, 200, 100]
-      change_value = buy(product_to_buy[:cost], money_valid) # make a purchase
+      MONEY_VALID = [5_000, 2_000, 1_000, 500, 200, 100]
+      change_value = buy(product_to_buy[:cost], MONEY_VALID) # make a purchase
       puts "\nPurchase successfull: $#{product_to_buy[:cost]} | Change: $#{change_value}\n\n"
-      change = optimized_change(change_value, money_valid)
+      change = optimized_change(change_value, MONEY_VALID)
       puts "Minimum number of bills and/or coins for the change:"
       change.each { |value, qty| puts "#{qty}: $#{value}" } # show change optimized. 
       machine_money += product_to_buy[:cost]
